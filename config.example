@@ -1,0 +1,68 @@
+# WPA2 Crack Configuration Example
+# Copy this file to .env and modify as needed
+
+# Raspberry Pi SSH connection string
+# Format: user@hostname or user@ip_address
+PI_HOST="pi@raspberrypi.local"
+#PI_HOST="pi@192.168.1.100"
+#PI_HOST="pi@10.0.0.2"
+
+# Path to wordlist file
+# Default rockyou.txt location in user's home directory
+WORDLIST="~/wordlist/rockyou.txt"
+
+# Alternative wordlist locations:
+#WORDLIST="~/wordlist/custom.txt"                   # Custom wordlist in home directory
+#WORDLIST="$HOME/wordlist/wifi-passwords.txt"       # Specialized WiFi wordlist
+#WORDLIST="/usr/share/wordlists/rockyou.txt"        # System-wide wordlist location
+
+# Advanced Options (uncomment to use)
+
+# Source mode: remote (download from Pi) or local (use local directory)
+SOURCE_MODE="remote"
+#SOURCE_MODE="local"
+
+# Local PCAP directory (required when SOURCE_MODE="local")
+#LOCAL_PCAP_DIR="/path/to/pcap/files"
+#LOCAL_PCAP_DIR="$HOME/captures"
+#LOCAL_PCAP_DIR="./pcap_files"
+
+# Attack mode: wordlist or bruteforce (default: wordlist)
+ATTACK_MODE="wordlist"
+#ATTACK_MODE="bruteforce"
+
+# GPU acceleration mode (default: 0)
+# 0 = CPU mode
+# 1 = GPU only  
+# 2 = GPU with high performance (workload 3)
+GPU_MODE="0"
+#GPU_MODE="1"    # GPU only
+#GPU_MODE="2"    # GPU high performance
+
+# Brute force configuration (only used when ATTACK_MODE="bruteforce")
+# Default pattern: 1 uppercase + 7 lowercase letters
+BRUTE_PATTERN="?u?l?l?l?l?l?l?l"
+
+# Common brute force patterns:
+#BRUTE_PATTERN="?d?d?d?d?d?d?d?d"           # 8 digits (PIN codes)
+#BRUTE_PATTERN="?l?l?l?l?l?l?l?l"           # 8 lowercase letters
+#BRUTE_PATTERN="?u?u?u?u?u?u?u?u"           # 8 uppercase letters
+#BRUTE_PATTERN="?a?a?a?a?a?a?a?a"           # 8 any characters
+#BRUTE_PATTERN="?u?l?l?l?d?d?d?d"           # Pattern like "Pass1234"
+
+# Password length for incremental brute force
+MIN_LENGTH="8"
+MAX_LENGTH="8"
+#MIN_LENGTH="6"   # For shorter passwords
+#MAX_LENGTH="10"  # For variable length attacks
+
+# Custom handshakes directory on Pi (default: /home/pi/handshakes)
+#PI_HANDSHAKES_DIR="/root/handshakes"
+
+# Local download directory (default: ~/Downloads/handshakes)
+#LOCAL_DOWNLOAD_DIR="$HOME/wpa2-cracking/handshakes"
+
+# Hashcat options (add to script if needed)
+# GPU only: -d 1
+# Increase workload: -w 3
+# Use rules: -r /path/to/rules/best64.rule

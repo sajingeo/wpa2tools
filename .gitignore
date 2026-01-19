@@ -1,0 +1,67 @@
+# Environment and config files
+.env
+config.local
+
+# Downloaded handshakes and results
+Downloads/
+handshakes/
+*.pcap
+*.cap
+*.hc22000
+*.hccapx
+*.cracked
+*.potfile
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.tar
+*.tar.gz
+*.zip
+
+# Wordlists (usually large)
+wordlists/
+*.txt
+!requirements.txt
+!QUICKSTART.txt
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Python (if extending with Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Hashcat
+*.potfile
+*.restore
+*.dictstat
+*.dictstat2
+hashcat.potfile
+hashcat.log
+
+# SSH keys (never commit these!)
+*.key
+*.pem
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+
+# Backup files
+*.bak
+*.backup
+*~
