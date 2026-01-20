@@ -35,9 +35,11 @@ ATTACK_MODE="wordlist"
 # 0 = CPU mode
 # 1 = GPU only  
 # 2 = GPU with high performance (workload 3)
+# 3 = GPU nightmare mode (workload 4, max performance)
 GPU_MODE="0"
 #GPU_MODE="1"    # GPU only
 #GPU_MODE="2"    # GPU high performance
+#GPU_MODE="3"    # GPU nightmare mode (max performance, system may be unresponsive)
 
 # Brute force configuration (only used when ATTACK_MODE="bruteforce")
 # Default pattern: 1 uppercase + 7 lowercase letters

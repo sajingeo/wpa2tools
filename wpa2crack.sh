@@ -24,7 +24,7 @@ LOCAL_PCAP_DIR="${LOCAL_PCAP_DIR/#\~/$HOME}"
 
 # Hashcat attack configuration
 ATTACK_MODE="${ATTACK_MODE:-wordlist}"  # wordlist or bruteforce
-GPU_MODE="${GPU_MODE:-0}"  # 0=CPU, 1=GPU only, 2=GPU with high performance (workload 3)
+GPU_MODE="${GPU_MODE:-0}"  # 0=CPU, 1=GPU only, 2=GPU with high performance (workload 3), 3=GPU nightmare mode (workload 4)
 BRUTE_PATTERN="${BRUTE_PATTERN:-?u?l?l?l?l?l?l?l}"  # Default 8 chars: 1 upper + 7 lower
 MIN_LENGTH="${MIN_LENGTH:-8}"  # Minimum password length for brute force
 MAX_LENGTH="${MAX_LENGTH:-8}"  # Maximum password length for brute force
@@ -65,6 +65,7 @@ show_help() {
     echo "                    0 = CPU mode"
     echo "                    1 = GPU only"
     echo "                    2 = GPU with high performance (workload 3)"
+    echo "                    3 = GPU nightmare mode (workload 4, max performance)"
     echo "  BRUTE_PATTERN   - Mask pattern for brute force (default: ?u?l?l?l?l?l?l?l)"
     echo "  MIN_LENGTH      - Minimum password length for brute force (default: 8)"
     echo "  MAX_LENGTH      - Maximum password length for brute force (default: 8)"
@@ -360,7 +361,7 @@ build_hashcat_command() {
         cmd="$cmd -a 0 \"$hc_file\" \"$WORDLIST\""
     else
         # Brute force mode
-        cmd="$cmd -a 3 \"$hc_file\" \"$BRUTE_PATTERN\""
+        cmd="$cmd -a 3 \"$hc_file\" $BRUTE_PATTERN"
         cmd="$cmd --increment --increment-min=$MIN_LENGTH --increment-max=$MAX_LENGTH"
     fi
     
@@ -371,6 +372,9 @@ build_hashcat_command() {
             ;;
         2)
             cmd="$cmd -d 1 -w 3"  # GPU with high performance (workload 3)
+            ;;
+        3)
+            cmd="$cmd -d 1 -w 4"  # GPU nightmare mode (workload 4)
             ;;
         *)
             # Default: CPU mode, no additional flags
@@ -409,6 +413,9 @@ crack_handshakes() {
             if [ "$ATTACK_MODE" = "bruteforce" ]; then
                 print_status "Brute force pattern: $BRUTE_PATTERN (length: $MIN_LENGTH-$MAX_LENGTH)"
             fi
+            
+            # Debug: print the actual command
+            print_warning "Debug - Hashcat command: $hashcat_cmd"
             
             if eval "$hashcat_cmd 2>> \"$hashcat_log\""; then
                 
@@ -460,7 +467,7 @@ crack_handshakes() {
         if [ "$ATTACK_MODE" = "wordlist" ]; then
             cmd="$cmd -a 0 \"${LOCAL_DOWNLOAD_DIR}/hc22000/combined.hc22000\" \"$WORDLIST\""
         else
-            cmd="$cmd -a 3 \"${LOCAL_DOWNLOAD_DIR}/hc22000/combined.hc22000\" \"$BRUTE_PATTERN\""
+            cmd="$cmd -a 3 \"${LOCAL_DOWNLOAD_DIR}/hc22000/combined.hc22000\" $BRUTE_PATTERN"
             cmd="$cmd --increment --increment-min=$MIN_LENGTH --increment-max=$MAX_LENGTH"
         fi
         
@@ -468,6 +475,7 @@ crack_handshakes() {
         case "$GPU_MODE" in
             1) cmd="$cmd -d 1" ;;
             2) cmd="$cmd -d 1 -w 3" ;;
+            3) cmd="$cmd -d 1 -w 4" ;;
         esac
         
         cmd="$cmd --outfile=\"$combined_output\" --outfile-format=3 --quiet --potfile-disable"
@@ -524,7 +532,7 @@ generate_report() {
             echo "- Brute Force Pattern: $BRUTE_PATTERN"
             echo "- Password Length: $MIN_LENGTH-$MAX_LENGTH characters"
         fi
-        echo "- GPU Mode: $GPU_MODE (0=CPU, 1=GPU, 2=GPU high performance)"
+        echo "- GPU Mode: $GPU_MODE (0=CPU, 1=GPU, 2=GPU high performance, 3=GPU nightmare)"
         echo ""
         echo "Statistics:"
         echo "- PCAP/PCAPNG files downloaded: $(find "${LOCAL_DOWNLOAD_DIR}/pcap" \( -name "*.pcap" -o -name "*.pcapng" \) | wc -l)"
